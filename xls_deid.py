@@ -4,7 +4,7 @@ import os
 import numpy as np
 
 # Initialize the identifying strings list
-identifying_strings = ["name", "dob"]
+identifying_strings = ["name", "dob", "birth", "date","mrn", "first","last","address", "ssn","middle"]
 
 def update_identifying_list_add(new_string):
     """
