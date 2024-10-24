@@ -95,7 +95,7 @@ def update_columns_preview(file, selected_columns):
     Updates the preview of the columns to be deleted (First Pass).
 
     Args:
-        file (gr.File): The uploaded Excel file.
+        file (gr.File): The uploaded Excel or CSV file.
         selected_columns (list): The list of columns selected for deletion in the first pass.
 
     Returns:
@@ -103,7 +103,10 @@ def update_columns_preview(file, selected_columns):
     """
     if file is not None and selected_columns:
         try:
-            df = pd.read_excel(file.name, engine='openpyxl')
+            if file.name.endswith('.csv'):
+                df = pd.read_csv(file.name)
+            else:
+                df = pd.read_excel(file.name, engine='openpyxl')
             columns_to_delete = df[selected_columns].head(10)
             return columns_to_delete
         except Exception as e:
@@ -116,7 +119,7 @@ def update_additional_columns(file, selected_columns_first_pass):
     Updates the list and preview of additional columns identified in the second pass.
 
     Args:
-        file (gr.File): The uploaded Excel file.
+        file (gr.File): The uploaded Excel or CSV file.
         selected_columns_first_pass (list): The list of columns selected in the first pass.
 
     Returns:
@@ -124,7 +127,10 @@ def update_additional_columns(file, selected_columns_first_pass):
     """
     if file is not None and selected_columns_first_pass:
         try:
-            df = pd.read_excel(file.name, engine='openpyxl')
+            if file.name.endswith('.csv'):
+                df = pd.read_csv(file.name)
+            else:
+                df = pd.read_excel(file.name, engine='openpyxl')
             additional_columns = second_pass_identification(df, selected_columns_first_pass)
             # Get preview of additional columns
             additional_columns_preview = df[additional_columns].head(10)
@@ -136,10 +142,10 @@ def update_additional_columns(file, selected_columns_first_pass):
 
 def process_file(file, output_file_name, selected_columns_first_pass, selected_columns_second_pass):
     """
-    Processes the uploaded Excel file to remove selected columns from both passes.
+    Processes the uploaded Excel or CSV file to remove selected columns from both passes.
 
     Args:
-        file (gr.File): The uploaded Excel file.
+        file (gr.File): The uploaded Excel or CSV file.
         output_file_name (str): The name of the output file.
         selected_columns_first_pass (list): The list of columns selected for deletion in the first pass.
         selected_columns_second_pass (list): The list of columns selected for deletion in the second pass.
@@ -152,11 +158,14 @@ def process_file(file, output_file_name, selected_columns_first_pass, selected_c
     if not output_file_name:
         return "Please specify an output file name."
 
-    # Read the Excel file
+    # Read the Excel or CSV file
     try:
-        df = pd.read_excel(file.name, engine='openpyxl')
+        if file.name.endswith('.csv'):
+            df = pd.read_csv(file.name)
+        else:
+            df = pd.read_excel(file.name, engine='openpyxl')
     except Exception as e:
-        return f"Error reading Excel file: {e}"
+        return f"Error reading file: {e}"
 
     # Combine selected columns from both passes
     all_selected_columns = selected_columns_first_pass + selected_columns_second_pass
@@ -169,11 +178,14 @@ def process_file(file, output_file_name, selected_columns_first_pass, selected_c
     if output_file_name == input_file_name:
         output_file_name = f"deidentified_{output_file_name}"
 
-    # Save the de-identified DataFrame to a new Excel file
+    # Save the de-identified DataFrame to a new file
     try:
-        df_deidentified.to_excel(output_file_name, index=False)
+        if file.name.endswith('.csv'):
+            df_deidentified.to_csv(output_file_name, index=False)
+        else:
+            df_deidentified.to_excel(output_file_name, index=False)
     except Exception as e:
-        return f"Error writing Excel file: {e}"
+        return f"Error writing file: {e}"
 
     return f"File processed successfully. De-identified file saved as {output_file_name}."
 
@@ -191,7 +203,7 @@ def main(file):
     Main function to handle the GUI interactions.
 
     Args:
-        file (gr.File): The uploaded Excel file.
+        file (gr.File): The uploaded Excel or CSV file.
 
     Returns:
         tuple: A tuple containing the status message, updated choices for identified columns, updated identifying strings list, default output file name, and original data preview.
@@ -202,11 +214,14 @@ def main(file):
 
     if file is not None:
         try:
-            df = pd.read_excel(file.name, engine='openpyxl')
+            if file.name.endswith('.csv'):
+                df = pd.read_csv(file.name)
+            else:
+                df = pd.read_excel(file.name, engine='openpyxl')
             original_df_preview = df.head(10)  # Display only the first 10 rows
         except Exception as e:
             return (
-                f"Error reading Excel file: {e}",
+                f"Error reading file: {e}",
                 gr.update(),
                 gr.update(),
                 gr.update(value=""),
@@ -264,14 +279,17 @@ def update_identified_columns(file):
     Updates the list of identified columns based on the current identifying strings.
 
     Args:
-        file (gr.File): The uploaded Excel file.
+        file (gr.File): The uploaded Excel or CSV file.
 
     Returns:
         gr.update: The updated choices for identified columns.
     """
     if file is not None:
         try:
-            df = pd.read_excel(file.name, engine='openpyxl')
+            if file.name.endswith('.csv'):
+                df = pd.read_csv(file.name)
+            else:
+                df = pd.read_excel(file.name, engine='openpyxl')
             identified_columns = identify_columns(df)
             return gr.update(choices=identified_columns)
         except:
@@ -285,7 +303,7 @@ with gr.Blocks() as demo:
 
     # Section 1: File Upload
     with gr.Row():
-        file_input = gr.File(label="Upload Excel File", file_types=['.xlsx', '.xls'])
+        file_input = gr.File(label="Upload Excel or CSV File", file_types=['.xlsx', '.xls', '.csv'])
 
     # Original Data Preview
     original_data_preview = gr.Dataframe(
