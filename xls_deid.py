@@ -9,6 +9,12 @@ identifying_strings = ["name", "dob"]
 def update_identifying_list_add(new_string):
     """
     Adds a string to the identifying strings list.
+
+    Args:
+        new_string (str): The string to be added to the identifying strings list.
+
+    Returns:
+        str: A comma-separated string of the updated identifying strings list.
     """
     global identifying_strings
     if new_string:
@@ -20,6 +26,12 @@ def update_identifying_list_add(new_string):
 def update_identifying_list_remove(new_string):
     """
     Removes a string from the identifying strings list.
+
+    Args:
+        new_string (str): The string to be removed from the identifying strings list.
+
+    Returns:
+        str: A comma-separated string of the updated identifying strings list.
     """
     global identifying_strings
     if new_string:
@@ -31,6 +43,12 @@ def update_identifying_list_remove(new_string):
 def identify_columns(df):
     """
     Identifies columns that contain any of the identifying strings.
+
+    Args:
+        df (pandas.DataFrame): The DataFrame to be checked for identifying columns.
+
+    Returns:
+        list: A list of column names that contain any of the identifying strings.
     """
     identified = []
     normalized_columns = [col.lower().strip() for col in df.columns]
@@ -44,6 +62,13 @@ def identify_columns(df):
 def second_pass_identification(df, selected_columns_first_pass):
     """
     Performs second pass to identify additional columns containing PII values.
+
+    Args:
+        df (pandas.DataFrame): The DataFrame to be checked for additional PII columns.
+        selected_columns_first_pass (list): The list of columns selected in the first pass.
+
+    Returns:
+        list: A list of additional column names containing PII values.
     """
     # Extract unique PII values from selected columns
     pii_values = set()
@@ -68,6 +93,13 @@ def second_pass_identification(df, selected_columns_first_pass):
 def update_columns_preview(file, selected_columns):
     """
     Updates the preview of the columns to be deleted (First Pass).
+
+    Args:
+        file (gr.File): The uploaded Excel file.
+        selected_columns (list): The list of columns selected for deletion in the first pass.
+
+    Returns:
+        pandas.DataFrame or None: A DataFrame preview of the columns to be deleted, or None if an error occurs.
     """
     if file is not None and selected_columns:
         try:
@@ -82,6 +114,13 @@ def update_columns_preview(file, selected_columns):
 def update_additional_columns(file, selected_columns_first_pass):
     """
     Updates the list and preview of additional columns identified in the second pass.
+
+    Args:
+        file (gr.File): The uploaded Excel file.
+        selected_columns_first_pass (list): The list of columns selected in the first pass.
+
+    Returns:
+        tuple: A tuple containing the updated choices for additional columns and a DataFrame preview of the additional columns.
     """
     if file is not None and selected_columns_first_pass:
         try:
@@ -98,6 +137,15 @@ def update_additional_columns(file, selected_columns_first_pass):
 def process_file(file, output_file_name, selected_columns_first_pass, selected_columns_second_pass):
     """
     Processes the uploaded Excel file to remove selected columns from both passes.
+
+    Args:
+        file (gr.File): The uploaded Excel file.
+        output_file_name (str): The name of the output file.
+        selected_columns_first_pass (list): The list of columns selected for deletion in the first pass.
+        selected_columns_second_pass (list): The list of columns selected for deletion in the second pass.
+
+    Returns:
+        str: A status message indicating the result of the processing.
     """
     if not file:
         return "No file uploaded."
@@ -132,12 +180,21 @@ def process_file(file, output_file_name, selected_columns_first_pass, selected_c
 def update_identifying_list():
     """
     Returns the updated identifying strings as a string.
+
+    Returns:
+        str: A comma-separated string of the updated identifying strings list.
     """
     return ", ".join(identifying_strings)
 
 def main(file):
     """
     Main function to handle the GUI interactions.
+
+    Args:
+        file (gr.File): The uploaded Excel file.
+
+    Returns:
+        tuple: A tuple containing the status message, updated choices for identified columns, updated identifying strings list, default output file name, and original data preview.
     """
     # Initialize output file name
     output_file_default = ""
@@ -183,6 +240,9 @@ def main(file):
 def reset():
     """
     Resets all inputs and outputs to their default states.
+
+    Returns:
+        tuple: A tuple containing the default states of all inputs and outputs.
     """
     global identifying_strings
     identifying_strings = ["name", "dob"]
@@ -202,6 +262,12 @@ def reset():
 def update_identified_columns(file):
     """
     Updates the list of identified columns based on the current identifying strings.
+
+    Args:
+        file (gr.File): The uploaded Excel file.
+
+    Returns:
+        gr.update: The updated choices for identified columns.
     """
     if file is not None:
         try:
