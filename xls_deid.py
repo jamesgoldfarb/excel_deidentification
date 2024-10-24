@@ -132,8 +132,6 @@ def update_additional_columns(file, selected_columns_first_pass):
             else:
                 df = pd.read_excel(file.name, engine='openpyxl')
             additional_columns = second_pass_identification(df, selected_columns_first_pass)
-            # Exclude columns already selected in the first pass
-            additional_columns = [col for col in additional_columns if col not in selected_columns_first_pass]
             # Get preview of additional columns
             additional_columns_preview = df[additional_columns].head(10)
             return gr.update(choices=additional_columns), additional_columns_preview
@@ -170,7 +168,7 @@ def process_file(file, output_file_name, selected_columns_first_pass, selected_c
         return f"Error reading file: {e}"
 
     # Combine selected columns from both passes
-    all_selected_columns = list(set(selected_columns_first_pass + selected_columns_second_pass))
+    all_selected_columns = selected_columns_first_pass + selected_columns_second_pass
 
     # Remove selected columns
     df_deidentified = df.drop(columns=all_selected_columns, errors='ignore')
