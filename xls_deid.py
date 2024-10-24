@@ -132,6 +132,8 @@ def update_additional_columns(file, selected_columns_first_pass):
             else:
                 df = pd.read_excel(file.name, engine='openpyxl')
             additional_columns = second_pass_identification(df, selected_columns_first_pass)
+            # Filter out columns selected in the first pass
+            additional_columns = [col for col in additional_columns if col not in selected_columns_first_pass]
             # Get preview of additional columns
             additional_columns_preview = df[additional_columns].head(10)
             return gr.update(choices=additional_columns), additional_columns_preview
