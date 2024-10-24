@@ -73,3 +73,7 @@ The `xls_deid.py` script provides the following main features:
 - Previewing the original data and the columns to be deleted.
 - Generating a de-identified Excel file with the selected columns removed.
 - Identifying additional columns containing PII values based on the unique values from the selected columns in the first pass.
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for more details.
