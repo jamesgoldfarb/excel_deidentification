@@ -29,6 +29,12 @@ To use the tool, follow these steps:
 5. Specify an output file name.
 6. Click the "Process" button to generate a de-identified Excel file.
 
+### Second Pass Identification
+
+1. After the first pass, the tool will identify additional columns containing PII values based on the unique values from the selected columns in the first pass.
+2. Select the additional columns you want to remove.
+3. Click the "Process" button again to generate a de-identified Excel file with the additional columns removed.
+
 ## Examples and Usage Scenarios
 
 ### Example 1: Removing Name and Date of Birth Columns
@@ -47,6 +53,16 @@ To use the tool, follow these steps:
 4. Select the identified columns and specify an output file name.
 5. Click "Process" to generate a de-identified Excel file without the "Patient ID", "Email", and "Phone Number" columns.
 
+### Example 3: Second Pass Identification
+
+1. Upload an Excel file containing columns such as "Name", "Date of Birth", "Address", etc.
+2. Add "name" and "dob" to the identifying strings list.
+3. The tool will identify the "Name" and "Date of Birth" columns.
+4. Select the identified columns and specify an output file name.
+5. Click "Process" to generate a de-identified Excel file without the "Name" and "Date of Birth" columns.
+6. The tool will then identify additional columns containing PII values based on the unique values from the selected columns in the first pass.
+7. Select the additional columns and click "Process" again to generate a de-identified Excel file with the additional columns removed.
+
 ## Functionality of `xls_deid.py`
 
 The `xls_deid.py` script provides the following main features:
@@ -56,3 +72,4 @@ The `xls_deid.py` script provides the following main features:
 - Automatically identifying columns containing the specified identifying strings.
 - Previewing the original data and the columns to be deleted.
 - Generating a de-identified Excel file with the selected columns removed.
+- Identifying additional columns containing PII values based on the unique values from the selected columns in the first pass.
